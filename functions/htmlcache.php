@@ -15,24 +15,31 @@
 if (!function_exists('htmlcache_filename')) {
     function htmlcache_filename($withDirectory = true)
     {
-        $uri = strtolower($_SERVER['HTTP_HOST'] . trim($_SERVER['REQUEST_URI'], '/') . $_SERVER['QUERY_STRING']);
+        $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
+        $page = strtolower($_SERVER['HTTP_HOST'] . trim($uri_parts[0]));
+        $uri = $page . strtolower($_SERVER['QUERY_STRING']);
+        
         if (empty($uri)) {
             $uri = 'index';
         }
-        $fileName = preg_replace('/__(.+)?/i', '_', preg_replace('/[^a-z0-9]/i', '_', $uri)) . '.cached.html';
+        
+        $uriMd5 = md5($uri);
+        $fileName = preg_replace('/__(.+)?/i', '_', preg_replace('/[^a-z0-9]/i', '_', $page)) . '.' . $uriMd5 . '.cached.html';
+        
         if ($withDirectory) {
             $fileName = htmlcache_directory() . $fileName;
         }
+
         return $fileName;
     }
 
     function htmlcache_directory()
     {
         if (function_exists('craft')) {
-            return craft()->path->getTempPath() . DIRECTORY_SEPARATOR . '_cached.';
+            return craft()->path->getTempPath() . DIRECTORY_SEPARATOR . 'htmlcache' . DIRECTORY_SEPARATOR;
         }
         // Fallback to default directory
-        return dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . '_cached.';
+        return dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'htmlcache' . DIRECTORY_SEPARATOR;
     }
 
     function htmlcache_indexEnabled($enabled = true)
