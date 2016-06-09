@@ -9,7 +9,7 @@
  * @link      https://github.com/craftapi
  * @package   HTMLCache
  * @since     1.0.4
- * @version   1.0.5
+ * @version   1.0.4
  */
 
 if (!function_exists('htmlcache_filename')) {
