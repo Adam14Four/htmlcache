@@ -64,6 +64,12 @@ class Htmlcache_HtmlcacheService extends BaseApplicationComponent
     public function createCacheFile()
     {
         if ($this->canCreateCacheFile()) {
+            $cacheDir = $this->getCacheFileDirectory();
+
+            if (!file_exists($cacheDir)) {
+                mkdir($cacheDir, 0777, true);
+            }
+
             $content = ob_get_contents();
             ob_end_flush();
             $file = $this->getCacheFileName();
