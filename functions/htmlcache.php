@@ -70,7 +70,7 @@ if (!function_exists('htmlcache_filename')) {
 
     function htmlcache_checkCache($direct = true)
     {
-        if (defined('NOHTMLCACHE')) {
+        if (defined('NOHTMLCACHE') || $_SERVER['REQUEST_METHOD'] !== 'GET') {
             return false;
         }
         $file = htmlcache_filename(true);
